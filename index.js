@@ -7,7 +7,7 @@ var SqueezePlayer = require('./squeezeplayer');
 // enable debugging during development.  It just appends \n and writes to the stream.
 net.Stream.prototype.writeln = function(s) {
     // Uncomment the next line to see data as it's written to telnet
-    // console.log("> " + s);
+     console.log("> " + s);
     this.write(s + "\n");
 }
 
@@ -33,7 +33,7 @@ LogitechMediaServer.prototype.start = function() {
     // that the LMS telnet connection emits
     self.line_parser.on("line", function(data) {
         // Uncomment the next line to see text lines coming back from telnet
-        // console.log("< " + data.toString().replace(/\n/g,"\\n"));
+         console.log("< " + data.toString().replace(/\n/g,"\\n"));
         self.handleLine(data);
     });
 

@@ -35,6 +35,12 @@ SqueezePlayer.prototype.handleServerData = function(strEvent, raw_buffer) {
             self.volume = parseInt(v);
         }
         this.emit("volume", v);
+    } else if (startsWith("playlist", strEvent)) {
+        this.emit("playlist",strEvent);
+    } else if (startsWith("songinfo", strEvent)) {
+        this.emit("songId",strEvent);
+         // var v = strEvent.match(/^mixer volume\s(.*?)$/)[1];
+         // console.log("got %s",v);
     } else {
         this.emit("logitech_event", strEvent);
     }
@@ -42,6 +48,10 @@ SqueezePlayer.prototype.handleServerData = function(strEvent, raw_buffer) {
 
 SqueezePlayer.prototype.switchOff = function() {
     this.runTelnetCmd("power 0");
+}
+
+SqueezePlayer.prototype.getSongInfo = function(songUrl) {
+    this.runTelnetCmd("songinfo 0 100 id tags:c url:"+songUrl);
 }
 
 SqueezePlayer.prototype.switchOn = function() {

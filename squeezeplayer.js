@@ -38,9 +38,9 @@ SqueezePlayer.prototype.handleServerData = function(strEvent, raw_buffer) {
     } else if (startsWith("playlist", strEvent)) {
         this.emit("playlist",strEvent);
     } else if (startsWith("songinfo", strEvent)) {
-        this.emit("songId",strEvent);
-         // var v = strEvent.match(/^mixer volume\s(.*?)$/)[1];
-         // console.log("got %s",v);
+        this.emit("songinfo",strEvent);
+          var v = strEvent;
+          //console.log(" ##### songinfo got %s",v);
     } else {
         this.emit("logitech_event", strEvent);
     }

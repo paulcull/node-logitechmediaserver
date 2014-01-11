@@ -181,6 +181,9 @@ LogitechMediaServer.prototype.handleLine = function(buffer) {
 
     // ~~~~~~~~~~~~~~ keywords below here are those which are associated with an individual player ~~~~~~~~~~~~~~~~~~
 
+    // console.log('---------------');
+    // console.log(buffer);
+
     if (self.handle_with_id(buffer, "signalstrength", function(player, params, b) {
         player.setProperty("signalstrength", parseInt(params));
     })) { handled = true } ;
@@ -202,6 +205,12 @@ LogitechMediaServer.prototype.handleLine = function(buffer) {
 
     if (self.handle_with_id(buffer, "current_title", function(player, params, b) {
         player.setProperty("current_title", params);
+    })) { handled = true };
+
+    // custom call back from squeezeplayer to get all the songinfo details
+    if (self.handle_with_id(buffer, "song_details", function(player, params, b) {
+        // console.log('-=-=-=-=-=-=-= - %s', params);
+        player.setProperty("song_details", params);
     })) { handled = true };
 
     if (self.handle_with_id(buffer, "mode", function(player, params, b) {

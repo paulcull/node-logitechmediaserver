@@ -5,7 +5,8 @@ function startsWith(search, s) {
     return s.substr(0,search.length) == search;
 }
 
-
+// TODO there is probably a better JS library function for this kind of string parsing
+// but I don't know it.
 function songinfoToProp(s) {
     var _ret = {};
     var _pos = 0;
@@ -15,16 +16,21 @@ function songinfoToProp(s) {
     var _prevProp = '';
     var notFirst = false;
     var _results = '{';
-    while (_pos < s.length) {
+    while (_pos <= s.length) {
         _char = s.substr(_pos,1);
         _Colon = _char==':' ? _pos : _lastColon;
         _Space = _char==' ' ? _pos : _lastSpace;
         // Uncomment this to see each character
         // console.log('Char is: %s ~ Colon is %s ~ Space is %s',_char,_Colon,_Space);
-        if (_char==':') {
-            _PropIs = s.substr(_Space+1,_Colon-_Space-1);
+        if (_char==':'||_pos==s.length) {
+            _PropIs = s.substr(_Space,_Colon-_Space);
+//            _PropIs = s.substr(_Space+1,_Colon-_Space-1);
             if (notFirst) {
-                _PropValue = s.substr(_lastColon+1,_pos-_lastColon-1-_PropIs.length).trim();
+                if (_pos==s.length) {
+                    _PropValue = s.substr(_lastColon+1,_pos-_lastColon-1).trim();
+                } else {
+                    _PropValue = s.substr(_lastColon+1,_pos-_lastColon-1-_PropIs.length).trim();
+                }
                 // Uncomment this to see the songDetails properties
                 // console.log('ThingIs %s and value is %s',_prevProp,_PropValue);
                 if (_results.length > 1) {
@@ -32,6 +38,11 @@ function songinfoToProp(s) {
                 }else{
                     _results = _results + '"' + _prevProp + '":"' + _PropValue +'"';
                 }
+            } else {
+                _PropValue = s.substr(_lastColon,_pos-_lastColon-_PropIs.length).trim();
+                // Uncomment this to see the songDetails properties
+                // console.log('ThingIs %s and value is %s',_prevProp,_PropValue);
+                _results = _results + '"' + _prevProp + '":"' + _PropValue +'"';
             }
             _prevProp = _PropIs.substr(_PropIs.lastIndexOf(':')+1).trim();
             notFirst = true;
@@ -43,7 +54,8 @@ function songinfoToProp(s) {
     _results = _results +'}';
     _ret = JSON.parse(_results);
     // Uncomment to see full object returned
-     console.log(JSON.stringify(_results));
+    // console.log("results object");
+    // console.log(JSON.stringify(_results));
     return _ret;
 }
 
@@ -79,11 +91,21 @@ SqueezePlayer.prototype.handleServerData = function(strEvent, raw_buffer) {
             self.volume = parseInt(v);
         }
         this.emit("volume", v);
+    
     } else if (startsWith("playlist", strEvent)) {
         this.emit("playlist",strEvent);
+    
     } else if (startsWith("songinfo", strEvent)) {
+        //console.log('(((((((((((((((')
         this._songInfo = songinfoToProp(strEvent);
+        //console.log(')))))))))))))))')
         this.emit('song_details',this._songInfo);
+    
+    } else if (startsWith("path", strEvent)) {
+        //console.log('+++++++++++++++')
+        this._songPath = songinfoToProp(strEvent);
+        this.emit('song_path',this._songPath);
+    
     } else {
         this.emit("logitech_event", strEvent);
     }
@@ -94,16 +116,42 @@ SqueezePlayer.prototype.switchOff = function() {
 }
 
 SqueezePlayer.prototype.getSongInfo = function(songUrl) {
-    //console.log('**** gettings songinfo for %s',songUrl);
-    this.runTelnetCmd("songinfo 0 100 id url:"+songUrl);
+    //console.log('****************** gettings songinfo for %s',songUrl);
+//    this.runTelnetCmd("songinfo 0 100 id url:"+songUrl);
+    this.runTelnetCmd("songinfo 0 100 tags:acdejlRsituwxy url:"+songUrl);
 }
 
 SqueezePlayer.prototype.getPlayerSong = function() {
+    //console.log('****************** gettings path');
     this.runTelnetCmd("path ?");
 }
 
 SqueezePlayer.prototype.switchOn = function() {
     this.runTelnetCmd("power 1");
+}
+
+SqueezePlayer.prototype.volup = function() {
+    this.runTelnetCmd("button volup");
+}
+
+SqueezePlayer.prototype.voldown = function() {
+    this.runTelnetCmd("button voldown");
+}
+
+SqueezePlayer.prototype.jumpfwd = function() {
+    this.runTelnetCmd("button fwd.single");
+}
+
+SqueezePlayer.prototype.jumprew = function() {
+    this.runTelnetCmd("button rew.single");
+}
+
+SqueezePlayer.prototype.play = function() {
+    this.runTelnetCmd("button play.single");
+}
+
+SqueezePlayer.prototype.pause = function() {
+    this.runTelnetCmd("button pause.single");
 }
 
 SqueezePlayer.prototype.setProperty = function(property, state) {

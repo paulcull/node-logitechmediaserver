@@ -54,8 +54,8 @@ function songinfoToProp(s) {
     _results = _results +'}';
     _ret = JSON.parse(_results);
     // Uncomment to see full object returned
-    // console.log("results object");
-    // console.log(JSON.stringify(_results));
+     // console.log("results object");
+     // console.log(JSON.stringify(_results));
     return _ret;
 }
 
@@ -102,10 +102,20 @@ SqueezePlayer.prototype.handleServerData = function(strEvent, raw_buffer) {
         this.emit('song_details',this._songInfo);
     
     } else if (startsWith("path", strEvent)) {
-        //console.log('+++++++++++++++')
-        this._songPath = songinfoToProp(strEvent);
-        this.emit('song_path',this._songPath);
-    
+        if (strEvent.search('spotify') == -1) {
+            this._songPath = songinfoToProp(strEvent);
+            this.emit('song_path',this._songPath);
+        } else {
+            //console.log(strEvent);
+            var _songPath = songinfoToProp(strEvent);
+            _songPath.spotify_path = strEvent.substring(5);
+            _songPath.id = strEvent.substring(21);
+            _songPath.source = 'spotify';
+            //_this.spotify = strEvent.substring(21);
+            //console.log(_this.spotify);
+            //this.emit('song_path',strEvent);
+            this.emit('spotify_details',_songPath);
+        }
     } else {
         this.emit("logitech_event", strEvent);
     }

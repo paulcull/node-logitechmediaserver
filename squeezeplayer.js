@@ -80,6 +80,7 @@ SqueezePlayer.prototype.runTelnetCmd = function(cmdstring) {
 SqueezePlayer.prototype.handleServerData = function(strEvent, raw_buffer) {
     var self = this;
     //console.log('+++++ %s',strEvent);
+    //console.log('+++++ %s',raw_buffer);
     if (startsWith("mixer volume", strEvent)) {
         var v = strEvent.match(/^mixer volume\s(.*?)$/)[1];
         // incremental change
@@ -95,6 +96,9 @@ SqueezePlayer.prototype.handleServerData = function(strEvent, raw_buffer) {
     } else if (startsWith("playlist", strEvent)) {
         this.emit("playlist",strEvent);
     
+    } else if (startsWith("current_title", strEvent)) {
+        this.emit("current_title",strEvent);
+    
     } else if (startsWith("songinfo", strEvent)) {
         //console.log('(((((((((((((((')
         this._songInfo = songinfoToProp(strEvent);
@@ -102,10 +106,8 @@ SqueezePlayer.prototype.handleServerData = function(strEvent, raw_buffer) {
         this.emit('song_details',this._songInfo);
     
     } else if (startsWith("path", strEvent)) {
-        if (strEvent.search('spotify') == -1) {
-            this._songPath = songinfoToProp(strEvent);
-            this.emit('song_path',this._songPath);
-        } else {
+        if (strEvent.search('spotify') > 0 ) {
+//        if (strEvent.search('spotify') == -1) {
             //console.log(strEvent);
             var _songPath = songinfoToProp(strEvent);
             _songPath.spotify_path = strEvent.substring(5);
@@ -115,6 +117,20 @@ SqueezePlayer.prototype.handleServerData = function(strEvent, raw_buffer) {
             //console.log(_this.spotify);
             //this.emit('song_path',strEvent);
             this.emit('spotify_details',_songPath);
+        } else if (strEvent.search('opml.radiotime') > 0 ) {
+            //console.log(strEvent);
+            var _songPath = songinfoToProp(strEvent);
+            _songPath.radio_path = strEvent.substring(5);
+//            _songPath.id = strEvent.substring(21);
+            _songPath.source = 'radio';
+            //_this.spotify = strEvent.substring(21);
+            //console.log(_this.spotify);
+            //this.emit('song_path',strEvent);
+            this.emit('radio_details',_songPath);
+        } else {
+            this._songPath = songinfoToProp(strEvent);
+            this._songPath.source = 'file';
+            this.emit('song_path',this._songPath);
         }
     } else {
         this.emit("logitech_event", strEvent);
@@ -128,12 +144,13 @@ SqueezePlayer.prototype.switchOff = function() {
 SqueezePlayer.prototype.getSongInfo = function(songUrl) {
     //console.log('****************** gettings songinfo for %s',songUrl);
 //    this.runTelnetCmd("songinfo 0 100 id url:"+songUrl);
-    this.runTelnetCmd("songinfo 0 100 tags:acdejlRsituwxy url:"+songUrl);
+    this.runTelnetCmd("songinfo 0 100 tags:acdejlNoKRsituwxy url:"+songUrl);
 }
 
 SqueezePlayer.prototype.getPlayerSong = function() {
     //console.log('****************** gettings path');
     this.runTelnetCmd("path ?");
+    this.runTelnetCmd("current_title ?");
 }
 
 SqueezePlayer.prototype.switchOn = function() {

@@ -7,6 +7,10 @@ Adjusted the songinfo request to exclude comments, as formats in comments are co
 
 Adjusted to add more actions to the squeezeplayer
 
+Adjusted to add support for Spotify plugin
+
+Adjusted to add support for passing radio titles
+
 
 
 Original readme

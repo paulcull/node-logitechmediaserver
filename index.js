@@ -6,8 +6,10 @@ var SqueezePlayer = require('./squeezeplayer');
 // Add a trivial method to the net.Stream prototype object to
 // enable debugging during development.  It just appends \n and writes to the stream.
 net.Stream.prototype.writeln = function(s) {
+    var self = this;
+    self.emit("lms_log","> " + s);
     // Uncomment the next line to see data as it's written to telnet
-     console.log("> " + s);
+    // console.log("> " + s);
     this.write(s + "\n");
 }
 
@@ -32,14 +34,16 @@ LogitechMediaServer.prototype.start = function() {
     // The LineParser just emits a "line" event for each line of data
     // that the LMS telnet connection emits
     self.line_parser.on("line", function(data) {
+        self.emit("lms_log","< " + data.toString().replace(/\n/g,"\\n"));
         // Uncomment the next line to see text lines coming back from telnet
-         console.log("< " + data.toString().replace(/\n/g,"\\n"));
+        // console.log("< " + data.toString().replace(/\n/g,"\\n"));
         self.handleLine(data);
     });
 
     // Start things off by asking how many players are connected.
     // See .handle() - the response to 'player count ?' is how the code
     // discovers info about all the known players.
+    self.emit("lms_log","Asking for player count");
     self.telnet.writeln("player count ?");
 }
 
@@ -181,8 +185,10 @@ LogitechMediaServer.prototype.handleLine = function(buffer) {
 
     // ~~~~~~~~~~~~~~ keywords below here are those which are associated with an individual player ~~~~~~~~~~~~~~~~~~
 
-     console.log('---------------');
-     console.log(buffer);
+     //self.emit("lms_log",'-------------');
+     //self.emit("lms_log",buffer);
+     //console.log('---------------');
+     //console.log(buffer);
 
     if (self.handle_with_id(buffer, "signalstrength", function(player, params, b) {
         player.setProperty("signalstrength", parseInt(params));

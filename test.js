@@ -25,9 +25,9 @@ lms.on("registration_finished", function() {
   console.log(player.inspect());
   
   // For debugging/learning, output events to console.log
-  // player.on("logitech_event", function(p) {
-  //     console.log("logitech_event", p);
-  // });
+   player.on("logitech_event", function(p) {
+       console.log("logitech_event", p);
+   });
 
  // set subscriptions to each of the events
   'logitech_event,property,playlists,songinfo'

@@ -15,9 +15,10 @@ net.Stream.prototype.writeln = function(s) {
 
 // The LogitechMediaServer object is an event emitter with a few properties.
 // After creating it, call .start() and wait for the "registration_finished" event.
-function LogitechMediaServer(address) {
+function LogitechMediaServer(address, cliport) {
   var self = this;
   self.address = address;
+  self.cliport = cliport;
 }
 util.inherits(LogitechMediaServer, EventEmitter);
 
@@ -28,7 +29,7 @@ LogitechMediaServer.prototype.start = function() {
     var self = this;
     
     // Listen on port 9090 to self.address
-    self.telnet = net.createConnection(9090, self.address);
+    self.telnet = net.createConnection(self.cliport, self.address);
     self.line_parser = new LineParser(self.telnet);
 
     // The LineParser just emits a "line" event for each line of data

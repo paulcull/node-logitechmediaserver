@@ -24,7 +24,7 @@ function songinfoToProp(s) {
         // console.log('Char is: %s ~ Colon is %s ~ Space is %s',_char,_Colon,_Space);
         if (_char==':'||_pos==s.length) {
             _PropIs = s.substr(_Space,_Colon-_Space);
-//            _PropIs = s.substr(_Space+1,_Colon-_Space-1);
+            //  _PropIs = s.substr(_Space+1,_Colon-_Space-1);
             if (notFirst) {
                 if (_pos==s.length) {
                     _PropValue = s.substr(_lastColon+1,_pos-_lastColon-1).trim();
@@ -100,33 +100,24 @@ SqueezePlayer.prototype.handleServerData = function(strEvent, raw_buffer) {
         this.emit("current_title",strEvent);
     
     } else if (startsWith("songinfo", strEvent)) {
-        //console.log('(((((((((((((((')
         this._songInfo = songinfoToProp(strEvent);
-        //console.log(')))))))))))))))')
         this.emit('song_details',this._songInfo);
     
     } else if (startsWith("path", strEvent)) {
+        // Spotify
         if (strEvent.search('spotify') > 0 ) {
-//        if (strEvent.search('spotify') == -1) {
-            //console.log(strEvent);
             var _songPath = songinfoToProp(strEvent);
             _songPath.spotify_path = strEvent.substring(5);
             _songPath.id = strEvent.substring(21);
             _songPath.source = 'spotify';
-            //_this.spotify = strEvent.substring(21);
-            //console.log(_this.spotify);
-            //this.emit('song_path',strEvent);
             this.emit('spotify_details',_songPath);
+        // Radio
         } else if (strEvent.search('opml.radiotime') > 0 ) {
-            //console.log(strEvent);
             var _songPath = songinfoToProp(strEvent);
             _songPath.radio_path = strEvent.substring(5);
-//            _songPath.id = strEvent.substring(21);
             _songPath.source = 'radio';
-            //_this.spotify = strEvent.substring(21);
-            //console.log(_this.spotify);
-            //this.emit('song_path',strEvent);
             this.emit('radio_details',_songPath);
+        // Normal track
         } else {
             this._songPath = songinfoToProp(strEvent);
             this._songPath.source = 'file';
@@ -137,52 +128,65 @@ SqueezePlayer.prototype.handleServerData = function(strEvent, raw_buffer) {
     }
 }
 
-SqueezePlayer.prototype.switchOff = function() {
-    this.runTelnetCmd("power 0");
-}
-
 SqueezePlayer.prototype.getSongInfo = function(songUrl) {
-    //console.log('****************** gettings songinfo for %s',songUrl);
-//    this.runTelnetCmd("songinfo 0 100 id url:"+songUrl);
+    this.emit('player_log','Getting Player Current Details');
     this.runTelnetCmd("songinfo 0 100 tags:acdejlNoKRsituwxy url:"+songUrl);
 }
 
 SqueezePlayer.prototype.getPlayerSong = function() {
-    //console.log('****************** gettings path');
+    this.emit('player_log','Getting Player Current Song');
     this.runTelnetCmd("path ?");
     this.runTelnetCmd("current_title ?");
 }
 
 SqueezePlayer.prototype.switchOn = function() {
+    this.emit('player_log','Switching On');
     this.runTelnetCmd("power 1");
 }
 
+SqueezePlayer.prototype.switchOff = function() {
+    this.emit('player_log','Switching Off');
+    this.runTelnetCmd("power 0");
+}
+
 SqueezePlayer.prototype.getPower = function() {
+    this.emit('player_log','Getting Power Status');
     this.runTelnetCmd("power ?");
 }
 
 SqueezePlayer.prototype.volup = function() {
-    this.runTelnetCmd("button volup");
+    var _cmd = "button volup";
+    this.emit('player_log','Function sending: '+_cmd);
+    this.runTelnetCmd(_cmd);
 }
 
 SqueezePlayer.prototype.voldown = function() {
-    this.runTelnetCmd("button voldown");
+    var _cmd = "button voldown";
+    this.emit('player_log','Function sending: '+_cmd);
+    this.runTelnetCmd(_cmd);
 }
 
 SqueezePlayer.prototype.jumpfwd = function() {
-    this.runTelnetCmd("button fwd.single");
-}
+    var _cmd = "button fwd.single";
+    this.emit('player_log','Function sending: '+_cmd);
+    this.runTelnetCmd(_cmd);}
 
 SqueezePlayer.prototype.jumprew = function() {
-    this.runTelnetCmd("button rew.single");
+    var _cmd = "button rew.single";
+    this.emit('player_log','Function sending: '+_cmd);
+    this.runTelnetCmd(_cmd);
 }
 
 SqueezePlayer.prototype.play = function() {
-    this.runTelnetCmd("button play.single");
+    var _cmd = "button play.single";
+    this.emit('player_log','Function sending: '+_cmd);
+    this.runTelnetCmd(_cmd);
 }
 
 SqueezePlayer.prototype.pause = function() {
-    this.runTelnetCmd("button pause.single");
+    var _cmd = "button pause.single";
+    this.emit('player_log','Function sending: '+_cmd);
+    this.runTelnetCmd(_cmd);
 }
 
 SqueezePlayer.prototype.setProperty = function(property, state) {

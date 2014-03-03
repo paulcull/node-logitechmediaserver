@@ -157,6 +157,10 @@ SqueezePlayer.prototype.switchOn = function() {
     this.runTelnetCmd("power 1");
 }
 
+SqueezePlayer.prototype.getPower = function() {
+    this.runTelnetCmd("power ?");
+}
+
 SqueezePlayer.prototype.volup = function() {
     this.runTelnetCmd("button volup");
 }

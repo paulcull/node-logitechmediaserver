@@ -1,6 +1,6 @@
 var LogitechMediaServer = require('./index');
 //var lms = new LogitechMediaServer('192.168.0.106');
-var lms = new LogitechMediaServer('localhost');
+var lms = new LogitechMediaServer('192.168.1.85');
 var player;
 //var mac_address = '00:04:20:27:5f:75';   // kitchen
 var mac_address = '93:15:45:55:15:fb'; //macbook
@@ -14,6 +14,7 @@ var rl = readline.createInterface({
 // Hit enter to see the player status
 rl.on('line', function (cmd) {
   console.log(player.inspect());
+  console.log(player.getPlayerSong());
 });
 
 lms.on("registration_finished", function() {

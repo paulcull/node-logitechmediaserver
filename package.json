@@ -25,9 +25,9 @@
   "license": "CC-by-SA",
   "readmeFilename": "README.md",
   "readme": "Licence\n-------\n\n<a rel=\"license\" href=\"http://creativecommons.org/licenses/by-sa/2.0/uk/\">\n<img alt=\"Creative Commons License\" style=\"border-width:0\" src=\"http://i.creativecommons.org/l/by-sa/2.0/uk/88x31.png\" />\n</a><br />\nThis work by <span xmlns:cc=\"http://creativecommons.org/ns#\" property=\"cc:attributionName\">Richard Morrison</span>\nis licensed under a <a rel=\"license\" href=\"http://creativecommons.org/licenses/by-sa/2.0/uk/\">Creative Commons Attribution-ShareAlike 2.0 UK: England &amp; Wales License</a>.\n<br />\nBased on a work at <a xmlns:dct=\"http://purl.org/dc/terms/\" href=\"https://github.com/mozz100/node-logitechmediaserver\" rel=\"dct:source\">github.com</a>.\n",
-  "_id": "logitechmediaserver@0.0.3",
+  "_id": "logitechmediaserver@0.0.4",
   "dist": {
-    "shasum": "1b7c1701c57be8edd7aae6a6a164b1d764434667"
+    "shasum": "9d4377e891ae91c937ad8f45673b12afeebdaf56"
   },
   "_from": "logitechmediaserver@git://github.com/paulcull/node-logitechmediaserver"
 }

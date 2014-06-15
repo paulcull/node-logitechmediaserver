@@ -166,6 +166,12 @@ SqueezePlayer.prototype.voldown = function() {
     this.runTelnetCmd(_cmd);
 }
 
+SqueezePlayer.prototype.runcmd = function(_cmd) {
+    //var _cmd = "button voldown";
+    this.emit('player_log','Function sending: runcmd: '+_cmd);
+    this.runTelnetCmd(_cmd);
+}
+
 SqueezePlayer.prototype.jumpfwd = function() {
     var _cmd = "button fwd.single";
     this.emit('player_log','Function sending: '+_cmd);
@@ -178,13 +184,13 @@ SqueezePlayer.prototype.jumprew = function() {
 }
 
 SqueezePlayer.prototype.play = function() {
-    var _cmd = "button play.single";
+    var _cmd = "play";
     this.emit('player_log','Function sending: '+_cmd);
     this.runTelnetCmd(_cmd);
 }
 
 SqueezePlayer.prototype.pause = function() {
-    var _cmd = "button pause.single";
+    var _cmd = "pause";
     this.emit('player_log','Function sending: '+_cmd);
     this.runTelnetCmd(_cmd);
 }
